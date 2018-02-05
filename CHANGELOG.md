@@ -7,6 +7,7 @@
 - The distinction between round-trip and one way ticket in kilometric expenses is now only informative.
 - Reconcile invoice with related refund
 - New boolean field "available to users" in expense type
+- The date of each step of the bank orders is correctly displayed.
 
 ### Bug Fixes
 - Fix demo data en and fr on General config to set the correct value of the fields custStockMoveMgtOnSO and supplStockMoveMgtOnSO.
@@ -27,7 +28,7 @@
 
 ## [4.1.0] - 2017-06-19
 - Ebics TS implementation
-- Bank ordre implementation
+- Bank order implementation
 - Lunch voucher management
 - Employee bonus management
 - Expense improvements (multi user, kilometric compute with some rates)
