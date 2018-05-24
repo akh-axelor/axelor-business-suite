@@ -26,11 +26,14 @@ import java.nio.file.Path;
 import java.text.ParseException;
 
 import com.axelor.apps.base.db.ICalendar;
+import com.axelor.apps.base.db.ICalendarEvent;
 import com.axelor.apps.base.db.ImportConfiguration;
 import com.axelor.apps.base.db.repo.ICalendarRepository;
 import com.axelor.apps.base.exceptions.IExceptionMessage;
 import com.axelor.apps.base.ical.ICalendarException;
 import com.axelor.apps.base.ical.ICalendarService;
+import com.axelor.auth.AuthUtils;
+import com.axelor.auth.db.User;
 import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
 import com.axelor.meta.MetaFiles;
@@ -127,6 +130,20 @@ public class ICalendarController {
 			response.setValue("password", calendarService.getCalendarEncryptPassword(request.getContext().get("newPassword").toString()));
 	}
 
+
+	public void showMyEvents(ActionRequest request, ActionResponse response){
+		User user = AuthUtils.getUser();
+
+		response.setView(ActionView
+	            .define(I18n.get("My Calendar"))
+	            .model(ICalendarEvent.class.getName())
+	            .add("calendar", "calendar-event-all")
+	            .add("grid", "calendar-event-grid")
+	            .add("form", "calendar-event-form")
+	            .domain("self.user.id = :_userId or self.calendar.user.id = :_userId or self.attendees.user.id = :_userId or self.organizer.user.id = :_userId")
+	            .context("_userId", user.getId())
+	            .map());
+	}
 }
 
 

@@ -8,6 +8,11 @@
 	  <field name="user"/>
 	</grid>
 	
+	<grid name="calendar-user-calendars-grid" model="com.axelor.apps.base.db.ICalendar" title="My calendars">
+		<field name="name"/>
+		<field name="isValid" title="Synchronized"/>
+	</grid>
+
 	<form name="calendar-form" model="com.axelor.apps.base.db.ICalendar" title="Calendar" onSave="com.axelor.apps.base.web.ICalendarController:validate" >
 	<toolbar>
 		  <button name="testConnect" title="Connect" onClick="save,com.axelor.apps.base.web.ICalendarController:validate,save,com.axelor.apps.base.web.ICalendarController:testConnect"/>
