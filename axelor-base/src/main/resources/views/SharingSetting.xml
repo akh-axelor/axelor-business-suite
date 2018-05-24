@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<object-views xmlns="http://axelor.com/xml/ns/object-views"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.0.xsd">
+
+	<grid name="sharing-setting-menu-grid" model="com.axelor.apps.base.db.SharingSetting" title="Sharing settings" canNew="false">
+		<field name="calendar"/>
+		<field name="visible"/>
+	</grid>
+
+	<grid name="sharing-setting-calendar-grid" model="com.axelor.apps.base.db.SharingSetting" title="Sharing settings" canNew="false">
+		<field name="sharedWith"/>
+	</grid>
+
+	<form name="sharing-setting-calendar-form" model="com.axelor.apps.base.db.SharingSetting" title="Sharing setting" onNew="action-sharing-setting-record-calendar-origin">
+		<panel colSpan="12">
+			<field name="calendar" hidden="true"/>
+			<field name="sharedWith" title="Share with" required="true" colOffset="3"/>
+		</panel>
+	</form>
+
+	<form name="sharing-setting-menu-form" model="com.axelor.apps.base.db.SharingSetting" title="Sharing setting" onLoad="action-sharing-setting-record-owner">
+		<panel colSpan="12">
+			<field name="calendar" readonlyIf="calendar != null &amp;&amp; calendar.user.id != $user" colSpan="5"/>
+			<field name="$from" title="calendar.owner" readonly="true" colSpan="5"/>
+			<field name="visible" widget="boolean-switch" readonlyIf="sharedWith.id != $user" colSpan="2"/>
+			<field name="sharedWith" hidden="true"/>
+		</panel>
+	</form>
+
+
+	<action-record name="action-sharing-setting-record-owner" model="com.axelor.apps.base.db.SharingSetting">
+		<field name="$from" expr="eval: calendar.user.fullName" if="calendar != null"/>
+	</action-record>
+	
+	<action-record name="action-sharing-setting-record-calendar-origin" model="com.axelor.apps.base.db.SharingSetting">
+		<field name="calendar" expr="eval: __parent__"/>
+	</action-record>
+	
+</object-views>

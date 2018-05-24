@@ -30,7 +30,13 @@
 		<domain>self.user = :__user__</domain>
 	</action-view>
 
-    <menuitem id="calendar.root.menu.configuration.others" name="menu-calendar-configuration-others" title="Other calendars" parent="menu-calendar-configuration"/>
+    <menuitem id="calendar.root.menu.configuration.others" name="menu-calendar-configuration-others" title="Shared with me" parent="menu-calendar-configuration" action="calendar.root.menu.shared.with.me"/>
+
+	<action-view name="calendar.root.menu.shared.with.me" title="Sharing settings" model="com.axelor.apps.base.db.SharingSetting">
+		<view type="grid" name="sharing-setting-menu-grid"/>
+		<view type="form" name="sharing-setting-menu-form"/>
+		<domain>self.sharedWith = :__user__</domain>
+	</action-view>
 
 	<menuitem id="abs-menu-admin" name="menu-admin" title="Administration" order="100" 
 	     icon="fa-wrench" icon-background="#2fa042" />

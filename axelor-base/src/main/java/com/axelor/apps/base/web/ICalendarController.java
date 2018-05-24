@@ -136,7 +136,11 @@ public class ICalendarController {
 	            .add("calendar", "calendar-event-all")
 	            .add("grid", "calendar-event-grid")
 	            .add("form", "calendar-event-form")
-	            .domain("self.user.id = :_userId or self.calendar.user.id = :_userId or self.attendees.user.id = :_userId or self.organizer.user.id = :_userId")
+	            .domain("self.user.id = :_userId"
+	            		+ " OR self.calendar.user.id = :_userId"
+	            		+ " OR :_userId IN (SELECT attendee.user FROM self.attendees attendee)"
+	            		+ " OR self.organizer.user.id = :_userId"
+	            		+ " OR :_userId IN (SELECT setting.sharedWith FROM self.calendar.sharingSettingList setting WHERE setting.visible = TRUE)")
 	            .context("_userId", user.getId())
 	            .map());
 	}
