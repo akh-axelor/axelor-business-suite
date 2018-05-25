@@ -1,5 +1,9 @@
 # Changelog
 
+## [Unreleased 5.1.x]
+## Features
+- Calendar menu entry
+
 ## [Unreleased 5.0.0-rc3]
 ## Features
 - Sale order: option to close linked opportunity upon confirmation.
