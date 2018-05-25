@@ -131,7 +131,7 @@ public class ICalendarController {
 		User user = AuthUtils.getUser();
 
 		response.setView(ActionView
-	            .define(I18n.get("My Calendar"))
+	            .define(I18n.get("My events"))
 	            .model(ICalendarEvent.class.getName())
 	            .add("calendar", "calendar-event-all")
 	            .add("grid", "calendar-event-grid")

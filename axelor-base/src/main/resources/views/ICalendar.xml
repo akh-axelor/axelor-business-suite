@@ -77,7 +77,7 @@
 				</panel>
 			</panel>
 			<panel colSpan="12" name="sharingSettings" title="Sharing settings">
-				<field name="sharingSettingList" canNew="true" canEdit="true" canRemove="true" showTitle="false" colSpan="12" grid-view="sharing-setting-calendar-grid" form-view="sharing-setting-calendar-form"/>
+				<field name="sharingSettingList" canNew="true" canEdit="true" canRemove="true" title="Shared with" colSpan="12" grid-view="sharing-setting-calendar-grid" form-view="sharing-setting-calendar-form"/>
 			</panel>
 		</panel-tabs>
 	</form>
