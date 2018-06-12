@@ -126,7 +126,7 @@ public class AccountClearanceService{
 		Tax tax = accountConfig.getStandardRateTax();
 
 		BigDecimal taxRate = taxService.getTaxRate(tax, appBaseService.getTodayDateTime().toLocalDate());
-		Account taxAccount = taxAccountService.getAccount(tax, company);
+		Account taxAccount = taxAccountService.getAccount(tax, company, false);
 		Account profitAccount = accountConfig.getProfitAccount();
 		Journal journal = accountConfig.getAccountClearanceJournal();
 

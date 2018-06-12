@@ -41,8 +41,6 @@ import com.axelor.apps.base.db.PriceListLine;
 import com.axelor.apps.base.db.Product;
 import com.axelor.apps.base.db.Unit;
 import com.axelor.apps.base.db.repo.AppAccountRepository;
-import com.axelor.apps.base.db.repo.AppBaseRepository;
-import com.axelor.apps.base.db.repo.PriceListLineRepository;
 import com.axelor.apps.base.service.CurrencyService;
 import com.axelor.apps.base.service.PriceListService;
 import com.axelor.apps.base.service.app.AppBaseService;
@@ -139,13 +137,6 @@ public class InvoiceLineServiceImpl implements InvoiceLineService {
 		
 		return currencyService.getAmountCurrencyConvertedAtDate(
 				productCurrency, invoice.getCurrency(), price, invoice.getInvoiceDate()).setScale(appAccountService.getNbDecimalDigitForUnitPrice(), RoundingMode.HALF_UP);
-	}
-
-
-	public boolean isPurchase(Invoice invoice)  {
-		int operation = invoice.getOperationTypeSelect();
-		if(operation == 1 || operation == 2)  { return true; }
-		else  { return false; }
 	}
 
 
@@ -253,7 +244,7 @@ public class InvoiceLineServiceImpl implements InvoiceLineService {
 	    Map<String, Object> productInformation = new HashMap<>();
 
 	    Product product = invoiceLine.getProduct();
-		boolean isPurchase = this.isPurchase(invoice);
+		boolean isPurchase = InvoiceToolService.isPurchase(invoice);
 
 		TaxLine taxLine = this.getTaxLine(invoice, invoiceLine, isPurchase);
 		productInformation.put("taxLine", taxLine);

@@ -52,6 +52,7 @@ import com.axelor.apps.account.service.AnalyticMoveLineService;
 import com.axelor.apps.account.service.FiscalPositionServiceAccountImpl;
 import com.axelor.apps.account.service.TaxAccountService;
 import com.axelor.apps.account.service.app.AppAccountService;
+import com.axelor.apps.account.service.invoice.InvoiceToolService;
 import com.axelor.apps.account.service.payment.PaymentService;
 import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.db.Currency;
@@ -312,7 +313,7 @@ public class MoveLineService {
 			
 				Tax tax = invoiceLineTax.getTaxLine().getTax();
 	
-				Account account = taxAccountService.getAccount(tax, company);
+				Account account = taxAccountService.getAccount(tax, company, isPurchase);
 	
 				if (account == null) {
 					throw new AxelorException(move, TraceBackRepository.CATEGORY_CONFIGURATION_ERROR, I18n.get(IExceptionMessage.MOVE_LINE_6), tax.getName(), company.getName());

@@ -18,42 +18,40 @@
 package com.axelor.apps.account.service;
 
 import com.axelor.apps.account.db.Account;
+import com.axelor.apps.account.db.AccountManagement;
 import com.axelor.apps.account.db.Tax;
-import com.axelor.apps.account.db.TaxAccount;
 import com.axelor.apps.base.db.Company;
 
 public class TaxAccountService {
-	
-	
-	public Account getAccount(Tax tax, Company company)  {
-		
-		TaxAccount taxAccount =  this.getTaxAccount(tax, company);
-		
-		if(taxAccount != null)  {
-			return taxAccount.getAccount();
-		}
-		
-		return null;
-		
-	}
-	
-	
-	public TaxAccount getTaxAccount(Tax tax, Company company)  {
-		
-		if(tax.getTaxAccountList() != null)  {
-			
-			
-			for(TaxAccount taxAccount : tax.getTaxAccountList())  {
-				
-				if(taxAccount.getCompany().equals(company))  {
-					return taxAccount;
-				}
-			}
-		}
-		
-		return null;
-		
-	}
-	
-	
+
+  public Account getAccount(Tax tax, Company company, boolean isPurchase) {
+
+    AccountManagement accountManagement = this.getTaxAccount(tax, company);
+
+    if (accountManagement != null) {
+      if (isPurchase) {
+        return accountManagement.getPurchaseAccount();
+
+      } else {
+        return accountManagement.getSaleAccount();
+      }
+    }
+
+    return null;
+  }
+
+  public AccountManagement getTaxAccount(Tax tax, Company company) {
+
+    if (tax.getAccountManagementList() != null) {
+
+      for (AccountManagement accountManagement : tax.getAccountManagementList()) {
+
+        if (accountManagement.getCompany().equals(company)) {
+          return accountManagement;
+        }
+      }
+    }
+
+    return null;
+  }
 }
