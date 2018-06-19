@@ -128,8 +128,8 @@ public abstract class InvoiceLineGeneratorSupplyChain extends InvoiceLineGenerat
 			this.copyAnalyticMoveLines(purchaseOrderLine.getAnalyticMoveLineList(), invoiceLine);
 					
 			this.copyBudgetDistributionList(purchaseOrderLine.getBudgetDistributionList(), invoiceLine);
-			
 			invoiceLine.setBudget(purchaseOrderLine.getBudget());
+			invoiceLine.setFixedAssets(purchaseOrderLine.getFixedAssets());
 		}
 		
 		else if(stockMoveLine != null)  {
