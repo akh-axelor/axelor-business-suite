@@ -85,8 +85,8 @@ public class TaxInvoiceLine extends TaxGenerator {
 
 				if(taxLine != null)  {
 					LOG.debug("TVA {}", taxLine);
-					if (map.containsKey(taxLine)) {
-						InvoiceLineTax invoiceLineTax = map.get(taxLine);
+					InvoiceLineTax invoiceLineTax = map.get(taxLine);
+					if (invoiceLineTax != null) {
 
 						// Dans la devise de la facture
 						invoiceLineTax.setExTaxBase(invoiceLineTax.getExTaxBase().add(invoiceLine.getExTaxTotal()));
@@ -94,8 +94,15 @@ public class TaxInvoiceLine extends TaxGenerator {
 						invoiceLineTax.setCompanyExTaxBase(invoiceLineTax.getCompanyExTaxBase().add(invoiceLine.getCompanyExTaxTotal()).setScale(2, RoundingMode.HALF_UP));
 
 						invoiceLineTax.setReverseCharged(false);
+						if(!invoiceLine.getFixedAssets()) {
+							invoiceLineTax.setSubTotalExcludingFixedAssets(invoiceLineTax.getSubTotalExcludingFixedAssets().add(invoiceLine.getExTaxTotal()).setScale(2, RoundingMode.HALF_UP));
+							invoiceLineTax.setCompanySubTotalExcludingFixedAssets(
+									invoiceLineTax.getCompanySubTotalExcludingFixedAssets()
+									.add(invoiceLine.getCompanyExTaxTotal()).setScale(2, RoundingMode.HALF_UP)
+									);
+						}
 					} else {
-						InvoiceLineTax invoiceLineTax = new InvoiceLineTax();
+						invoiceLineTax = new InvoiceLineTax();
 						invoiceLineTax.setInvoice(invoice);
 
 						// Dans la devise de la facture
@@ -104,6 +111,14 @@ public class TaxInvoiceLine extends TaxGenerator {
 						invoiceLineTax.setCompanyExTaxBase(invoiceLine.getCompanyExTaxTotal().setScale(2, RoundingMode.HALF_UP));
 
 						invoiceLineTax.setReverseCharged(false);
+
+						if(!invoiceLine.getFixedAssets()) {
+							invoiceLineTax.setSubTotalExcludingFixedAssets(invoiceLine.getCompanyExTaxTotal().setScale(2, RoundingMode.HALF_UP));
+							invoiceLineTax.setCompanySubTotalExcludingFixedAssets(
+									invoiceLineTax.getCompanySubTotalExcludingFixedAssets()
+									.add(invoiceLine.getCompanyExTaxTotal()).setScale(2, RoundingMode.HALF_UP)
+									);
+						}
 
 						invoiceLineTax.setTaxLine(taxLine);
 						map.put(taxLine, invoiceLineTax);
@@ -146,18 +161,24 @@ public class TaxInvoiceLine extends TaxGenerator {
 
 		for (InvoiceLineTax invoiceLineTax : map.values()) {
 
+			BigDecimal taxValue = invoiceLineTax.getTaxLine().getValue();
 			// Dans la devise de la facture
 			BigDecimal exTaxBase = (invoiceLineTax.getReverseCharged()) ? invoiceLineTax.getExTaxBase().negate() : invoiceLineTax.getExTaxBase();
-			BigDecimal taxTotal = computeAmount(exTaxBase, invoiceLineTax.getTaxLine().getValue());
+			BigDecimal taxTotal = computeAmount(exTaxBase, taxValue);
 			invoiceLineTax.setTaxTotal(taxTotal);
 			invoiceLineTax.setInTaxTotal(invoiceLineTax.getExTaxBase().add(taxTotal));
 
 			// Dans la devise de la société
 			BigDecimal companyExTaxBase = (invoiceLineTax.getReverseCharged()) ? invoiceLineTax.getCompanyExTaxBase().negate() : invoiceLineTax.getCompanyExTaxBase();
-			BigDecimal companyTaxTotal = computeAmount(companyExTaxBase, invoiceLineTax.getTaxLine().getValue());
+			BigDecimal companyTaxTotal = computeAmount(companyExTaxBase, taxValue);
 			invoiceLineTax.setCompanyTaxTotal(companyTaxTotal);
 			invoiceLineTax.setCompanyInTaxTotal(invoiceLineTax.getCompanyExTaxBase().add(companyTaxTotal));
 
+			invoiceLineTax.setSubTotalExcludingFixedAssets(computeAmount(invoiceLineTax.getSubTotalExcludingFixedAssets(), taxValue));
+			invoiceLineTax.setSubTotalOfFixedAssets(taxTotal.subtract(invoiceLineTax.getSubTotalExcludingFixedAssets()).setScale(2, RoundingMode.HALF_UP));
+
+			invoiceLineTax.setCompanySubTotalExcludingFixedAssets(computeAmount(invoiceLineTax.getCompanySubTotalExcludingFixedAssets(), taxValue));
+			invoiceLineTax.setCompanySubTotalOfFixedAssets(companyTaxTotal.subtract(invoiceLineTax.getCompanySubTotalExcludingFixedAssets()).setScale(2, RoundingMode.HALF_UP));
 			invoiceLineTaxList.add(invoiceLineTax);
 
 			LOG.debug("Ligne de TVA : Total TVA => {}, Total HT => {}", new Object[] {invoiceLineTax.getTaxTotal(), invoiceLineTax.getInTaxTotal()});
